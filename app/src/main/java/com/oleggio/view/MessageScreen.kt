@@ -1,5 +1,6 @@
 package com.oleggio.view
 
+import android.content.res.Configuration
 import android.net.Uri
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -37,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -48,6 +50,15 @@ import com.oleggio.topchat.viewmodel.MessageListViewModel
 import kotlinx.coroutines.launch
 
 @Composable
+fun MessageScreenChooser(navController: NavController) {
+    if (LocalConfiguration.current.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+        ChatScreen(navController)
+    } else {
+        MessageScreen(navController)
+    }
+}
+
+@Composable
 fun ViewImageFullscreen(imageUrl: String, onBack : () -> Unit) {
     BackHandler(onBack = onBack)
 
@@ -55,6 +66,7 @@ fun ViewImageFullscreen(imageUrl: String, onBack : () -> Unit) {
         modifier = Modifier
             .fillMaxSize()
             .background(Color.Black)
+            .clickable(enabled = false) {}
     ) {
         AsyncImage(
             model = ApiService.API_URL + "img/" + Uri.decode(imageUrl),
@@ -101,6 +113,13 @@ fun MessageItem(message: Message, navController: NavController) {
 @Composable
 fun MessageScreen(navController: NavController, messageListViewModel: MessageListViewModel = hiltViewModel()) {
     val messages by messageListViewModel.messageList.collectAsState()
+
+    BackHandler(enabled = messages.isNotEmpty()) {
+        navController.popBackStack()
+        messageListViewModel.clearMessageList()
+        messageListViewModel.clearSelected()
+    }
+
     val selected by messageListViewModel.selectedChat.collectAsState()
     val messageField by messageListViewModel.messageInput.collectAsState()
     val isLoading by messageListViewModel.isLoading.collectAsState()
@@ -119,8 +138,10 @@ fun MessageScreen(navController: NavController, messageListViewModel: MessageLis
     }
 
     LaunchedEffect(selected) {
-        messageListViewModel.cleanMessageList()
-        messageListViewModel.getMessageList(context, lastId = Int.MAX_VALUE)
+        if (selected != "") {
+            messageListViewModel.clearMessageList()
+            messageListViewModel.getMessageList(context, lastId = Int.MAX_VALUE)
+        }
     }
 
     Scaffold(

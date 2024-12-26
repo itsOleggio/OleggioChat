@@ -51,8 +51,12 @@ class MessageListViewModel @Inject constructor(
         _messageInput.value = text
     }
 
-    fun cleanMessageList() {
+    fun clearMessageList() {
         _messageList.value = emptyList()
+    }
+
+    fun clearSelected() {
+        chatRepository.clearSelectedChat()
     }
 
     fun cleanUserInput() {

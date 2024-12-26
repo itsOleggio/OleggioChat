@@ -57,7 +57,7 @@ import com.oleggio.topchat.viewmodel.ChatListViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ChatScreen(navController : NavController) {
-    var drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+    val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
     ModalNavigationDrawer(
         drawerState = drawerState,
@@ -284,7 +284,7 @@ fun UserList(navController: NavController, chatListViewModel: ChatListViewModel 
 }
 
 @Composable
-fun ChatAlbum(navController: NavController, paddingValues: PaddingValues) {
+fun ChatAlbum(navController: NavController, paddingValues: PaddingValues = PaddingValues(0.dp)) {
     Row (modifier = Modifier.fillMaxSize()) {
         Box(modifier = Modifier
             .weight(1f)

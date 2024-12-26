@@ -17,8 +17,8 @@ import androidx.navigation.navArgument
 import dagger.hilt.android.AndroidEntryPoint
 import com.oleggio.view.ChatScreen
 import com.oleggio.view.ViewImageFullscreen
-import com.oleggio.view.MessageScreen
 import com.oleggio.topchat.ui.theme.ChadTheme
+import com.oleggio.view.MessageScreenChooser
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                     Box(modifier = Modifier.padding(innerPadding)) {
                         val navController = rememberNavController()
                         NavHost(navController = navController, startDestination = "chats") {
-                            composable("messages") { MessageScreen(navController) }
+                            composable("messages") { MessageScreenChooser(navController) }
                             composable("chats") { ChatScreen(navController) }
                             composable("login") { LoginScreen(navController) }
                             composable(
